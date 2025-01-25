@@ -158,6 +158,11 @@ class Utils:
         session.mount(
             "http://", HTTPAdapter(max_retries=retry)
         )  # See https://stackoverflow.com/a/35504626/4164390 to finetune
+        # todo：这里可能需要走代理
+        session.proxies = {
+            'http': '',
+            'https': ''
+        }
         return session
 
     def isLoggedIn(self) -> bool:

@@ -23,7 +23,7 @@ class Browser:
     webdriver: undetected_chromedriver.Chrome
 
     def __init__(
-        self, mobile: bool, account: Account, args: argparse.Namespace
+            self, mobile: bool, account: Account, args: argparse.Namespace
     ) -> None:
         # Initialize browser instance
         logging.debug("in __init__")
@@ -72,14 +72,15 @@ class Browser:
         self.webdriver.quit()
 
     def browserSetup(
-        self,
+            self,
     ) -> undetected_chromedriver.Chrome:
         # Configure and setup the Chrome browser
         options = undetected_chromedriver.ChromeOptions()
         options.headless = self.headless
         options.add_argument(f"--lang={self.localeLang}")
         options.add_argument("--log-level=3")
-        options.add_argument("--blink-settings=imagesEnabled=false")      #If you are having MFA sign in issues comment this line out
+        options.add_argument(
+            "--blink-settings=imagesEnabled=false")  # If you are having MFA sign in issues comment this line out
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--ignore-certificate-errors-spki-list")
         options.add_argument("--ignore-ssl-errors")
@@ -90,10 +91,10 @@ class Browser:
         options.add_argument("--disable-default-apps")
         options.add_argument("--disable-features=Translate")
         options.add_argument("--disable-features=PrivacySandboxSettings4")
-        options.add_argument("--disable-search-engine-choice-screen") #153
+        options.add_argument("--disable-search-engine-choice-screen")  # 153
 
         seleniumwireOptions: dict[str, Any] = {"verify_ssl": False}
-
+        options.page_load_strategy = 'eager'
         if self.proxy:
             # Setup proxy if provided
             seleniumwireOptions["proxy"] = {
@@ -107,6 +108,8 @@ class Browser:
         major = int(version.split(".")[0])
 
         driver = webdriver.Chrome(
+            # todo 设置driver路径，配置
+            driver_executable_path='',
             options=options,
             seleniumwire_options=seleniumwireOptions,
             user_data_dir=self.userDataDir.as_posix(),
