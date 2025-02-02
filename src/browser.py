@@ -6,15 +6,17 @@ from types import TracebackType
 from typing import Any, Type
 
 import ipapi
-import seleniumwire.undetected_chromedriver as webdriver
+# import seleniumwire.undetected_chromedriver as webdriver
 import undetected_chromedriver
 from ipapi.exceptions import RateLimited
 from selenium.webdriver import ChromeOptions
+from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 
 from src import Account, RemainingSearches
 from src.userAgentGenerator import GenerateUserAgent
 from src.utils import Utils
+from .constants import REMOTE_DRIVER_URL
 
 
 class Browser:
@@ -107,14 +109,18 @@ class Browser:
         version = self.getChromeVersion()
         major = int(version.split(".")[0])
 
-        driver = webdriver.Chrome(
-            # todo 设置driver路径，配置
-            driver_executable_path='',
-            options=options,
-            seleniumwire_options=seleniumwireOptions,
-            user_data_dir=self.userDataDir.as_posix(),
-            version_main=major,
+        driver = webdriver.Remote(
+            command_executor=REMOTE_DRIVER_URL,
+            options=options
         )
+        # driver = webdriver.Chrome(
+        #     # todo 设置driver路径，配置
+        #     driver_executable_path='',
+        #     options=options,
+        #     seleniumwire_options=seleniumwireOptions,
+        #     user_data_dir=self.userDataDir.as_posix(),
+        #     version_main=major,
+        # )
 
         seleniumLogger = logging.getLogger("seleniumwire")
         seleniumLogger.setLevel(logging.ERROR)
@@ -222,7 +228,7 @@ class Browser:
         chrome_options = ChromeOptions()
         chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--no-sandbox")
-        driver = WebDriver(options=chrome_options)
+        driver = webdriver.Remote(REMOTE_DRIVER_URL, options=chrome_options)
         version = driver.capabilities["browserVersion"]
 
         driver.close()

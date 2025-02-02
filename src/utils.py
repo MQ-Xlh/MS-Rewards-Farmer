@@ -22,8 +22,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from urllib3 import Retry
 
-from .constants import REWARDS_URL
-from .constants import SEARCH_URL
+from .constants import REWARDS_URL, SEARCH_URL, PROXY_URL
 
 
 class Utils:
@@ -159,10 +158,11 @@ class Utils:
             "http://", HTTPAdapter(max_retries=retry)
         )  # See https://stackoverflow.com/a/35504626/4164390 to finetune
         # todo：这里可能需要走代理
-        session.proxies = {
-            'http': '',
-            'https': ''
-        }
+        if PROXY_URL:
+            session.proxies = {
+                'http': PROXY_URL,
+                'https': PROXY_URL
+            }
         return session
 
     def isLoggedIn(self) -> bool:
