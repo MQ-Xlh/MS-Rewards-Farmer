@@ -107,7 +107,14 @@ class Utils:
         self.goToRewards()
 
     def goToRewards(self) -> None:
-        self.webdriver.get(REWARDS_URL)
+        try:
+            self.webdriver.get(REWARDS_URL)
+        except TimeoutException:
+            logging.info("An excepted timeout,try to create new tab")
+            self.webdriver.execute_script("window.open();")
+            self.webdriver.close()
+            self.webdriver.switch_to.window(self.webdriver.window_handles[-1])
+            self.webdriver.get(REWARDS_URL)
         assert (
             self.webdriver.current_url == REWARDS_URL
         ), f"{self.webdriver.current_url} {REWARDS_URL}"
