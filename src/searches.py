@@ -164,7 +164,12 @@ class Searches:
                     f"[BING] Search attempt not counted {i}/{Searches.maxRetries}, sleeping {sleepTime}"
                     f" seconds..."
                 )
-                time.sleep(sleepTime)
+                keepAlice, remainTime = divmod(sleepTime, 100)
+                for _ in range(keepAlice):
+                    time.sleep(100)
+                    self.webdriver.execute_script("console.log('keep alive after 100 seconds');")
+                time.sleep(remainTime)
+
 
             searchbar: WebElement
             for _ in range(1000):
