@@ -165,7 +165,7 @@ class Searches:
                     f" seconds..."
                 )
                 keepAlice, remainTime = divmod(sleepTime, 100)
-                for _ in range(keepAlice):
+                for _ in range(int(keepAlice)):
                     time.sleep(100)
                     self.webdriver.execute_script("console.log('keep alive after 100 seconds');")
                 time.sleep(remainTime)
