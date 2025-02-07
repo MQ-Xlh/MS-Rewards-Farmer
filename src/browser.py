@@ -113,6 +113,7 @@ class Browser:
             command_executor=REMOTE_DRIVER_URL,
             options=options
         )
+        driver.set_page_load_timeout(3 * 60)
         # driver = webdriver.Chrome(
         #     # todo 设置driver路径，配置
         #     driver_executable_path='',
