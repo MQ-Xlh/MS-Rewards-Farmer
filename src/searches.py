@@ -11,6 +11,7 @@ from itertools import cycle
 from typing import Final
 
 import requests
+from opencc import OpenCC
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -38,6 +39,7 @@ class RetriesStrategy(Enum):
 
 class Searches:
     config = Utils.loadConfig()
+    cc = OpenCC('t2s')
     maxRetries: Final[int] = config.get("retries", {}).get("max", 8)
     """
     the max amount of retries to attempt
@@ -144,7 +146,8 @@ class Searches:
         # Function to perform a single Bing search
         pointsBefore = self.browser.utils.getAccountPoints()
 
-        rootTerm = list(self.googleTrendsShelf.keys())[0]
+        # 简体中文
+        rootTerm = self.cc.convert(list(self.googleTrendsShelf.keys())[0])
         terms = self.getRelatedTerms(rootTerm)
         logging.debug(f"terms={terms}")
         termsCycle: cycle[str] = cycle(terms)
