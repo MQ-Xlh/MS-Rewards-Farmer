@@ -96,7 +96,7 @@ class Browser:
         options.add_argument("--disable-search-engine-choice-screen")  # 153
 
         seleniumwireOptions: dict[str, Any] = {"verify_ssl": False}
-        options.page_load_strategy = 'eager'
+        # options.page_load_strategy = 'eager'
         if self.proxy:
             # Setup proxy if provided
             seleniumwireOptions["proxy"] = {
