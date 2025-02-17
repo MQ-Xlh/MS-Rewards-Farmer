@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import random
 from pathlib import Path
@@ -113,6 +114,17 @@ class Browser:
             command_executor=REMOTE_DRIVER_URL,
             options=options
         )
+        resource = "/session/%s/chromium/send_command_and_get_result" % driver.session_id
+        url = driver.command_executor._client_config.remote_server_addr + resource
+        body = json.dumps({'cmd': "Page.addScriptToEvaluateOnNewDocument", 'params': {
+            "source": """
+                    Object.defineProperty(navigator, 'webdriver', {
+                      get: () => undefined
+                    })
+                  """
+        }})
+        driver.command_executor._request('POST', url, body)
+
         driver.set_page_load_timeout(3 * 60)
         # driver = webdriver.Chrome(
         #     # todo 设置driver路径，配置
