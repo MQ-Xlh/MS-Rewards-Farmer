@@ -178,7 +178,7 @@ class Searches:
             searchbar: WebElement
             for _ in range(1000):
                 searchbar = self.browser.utils.waitUntilClickable(
-                    By.ID, "sb_form_q", timeToWait=40
+                    By.ID, "sb_form_q", timeToWait=90
                 )
                 searchbar.clear()
                 term = next(termsCycle)
