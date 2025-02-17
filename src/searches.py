@@ -94,6 +94,8 @@ class Searches:
                 )
             searchTerms = list(set(searchTerms))
         del searchTerms[wordsCount : (len(searchTerms) + 1)]
+        # 转简体中文
+        searchTerms = [self.cc.convert(item) for item in searchTerms]
         return searchTerms
 
     def getRelatedTerms(self, term: str) -> list[str]:
@@ -146,8 +148,7 @@ class Searches:
         # Function to perform a single Bing search
         pointsBefore = self.browser.utils.getAccountPoints()
 
-        # 简体中文
-        rootTerm = self.cc.convert(list(self.googleTrendsShelf.keys())[0])
+        rootTerm =list(self.googleTrendsShelf.keys())[0]
         terms = self.getRelatedTerms(rootTerm)
         logging.debug(f"terms={terms}")
         termsCycle: cycle[str] = cycle(terms)
