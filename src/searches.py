@@ -76,22 +76,30 @@ class Searches:
         while len(searchTerms) < wordsCount:
             i += 1
             # Fetching daily trends from Google Trends API
-            r = session.get(
-                f"https://trends.google.com/trends/api/dailytrends?hl={self.browser.localeLang}"
-                f'&ed={(date.today() - timedelta(days=i)).strftime("%Y%m%d")}&geo=TW&ns=15'
-            )
+            # r = session.get(
+            #     f"https://trends.google.com/trends/api/dailytrends?hl={self.browser.localeLang}"
+            #     f'&ed={(date.today() - timedelta(days=i)).strftime("%Y%m%d")}&geo=TW&ns=15'
+            # )
+            # assert (
+            #     r.status_code == requests.codes.ok
+            # )  # todo Add guidance if assertion fails
+            # trends = json.loads(r.text[6:])
+            # for topic in trends["default"]["trendingSearchesDays"][0][
+            #     "trendingSearches"
+            # ]:
+            #     searchTerms.append(topic["title"]["query"].lower())
+            #     searchTerms.extend(
+            #         relatedTopic["query"].lower()
+            #         for relatedTopic in topic["relatedQueries"]
+            #     )
+            r = session.get(f"https://api.rebang.today/v1/items?tab=top&sub_tab=today&page={i}&version=1")
             assert (
-                r.status_code == requests.codes.ok
+                    r.status_code == requests.codes.ok
             )  # todo Add guidance if assertion fails
-            trends = json.loads(r.text[6:])
-            for topic in trends["default"]["trendingSearchesDays"][0][
-                "trendingSearches"
-            ]:
-                searchTerms.append(topic["title"]["query"].lower())
-                searchTerms.extend(
-                    relatedTopic["query"].lower()
-                    for relatedTopic in topic["relatedQueries"]
-                )
+            res = json.loads(r.text)
+            trends = json.loads(res["data"]["list"])
+            for item in trends:
+                searchTerms.append(item['title'])
             searchTerms = list(set(searchTerms))
         del searchTerms[wordsCount : (len(searchTerms) + 1)]
         # 转简体中文
