@@ -3,6 +3,7 @@ import dbm.dumb
 import json
 import logging
 import random
+import re
 import shelve
 import time
 from datetime import date, timedelta
@@ -39,7 +40,8 @@ class RetriesStrategy(Enum):
 
 class Searches:
     config = Utils.loadConfig()
-    cc = OpenCC('t2s')
+    p = re.compile(u'['u'\U0001F300-\U0001F64F' u'\U0001F680-\U0001F6FF' u'\u2600-\u2B55 \U00010000-\U0010ffff]+')
+
     maxRetries: Final[int] = config.get("retries", {}).get("max", 8)
     """
     the max amount of retries to attempt
@@ -103,7 +105,7 @@ class Searches:
             searchTerms = list(set(searchTerms))
         del searchTerms[wordsCount : (len(searchTerms) + 1)]
         # 转简体中文
-        searchTerms = [self.cc.convert(item) for item in searchTerms]
+        searchTerms = [re.sub(self.p, '', item) for item in searchTerms]
         return searchTerms
 
     def getRelatedTerms(self, term: str) -> list[str]:
