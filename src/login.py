@@ -61,6 +61,14 @@ class Login:
 
         else:
             # Password-based login, enter password from accounts.json
+            try:
+                self.utils.waitUntilClickable(By.NAME, "passwd")
+            except TimeoutException:
+                with contextlib.suppress(TimeoutException):
+                    self.utils.waitUntilVisible(By.ID, "oneTimeCodeTitle")
+                    self.utils.waitUntilVisible(By.ID, "idA_PWD_SwitchToCredPicker").click()
+                    self.utils.waitUntilVisible(By.ID, "tileList").find_element(By.TAG_NAME, 'div').click()
+
             passwordField = self.utils.waitUntilClickable(By.NAME, "passwd")
             logging.info("[LOGIN] Entering password...")
             passwordField.click()
