@@ -12,7 +12,6 @@ from itertools import cycle
 from typing import Final
 
 import requests
-from opencc import OpenCC
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -120,6 +119,7 @@ class Searches:
         )  # todo Wrap if failed, or assert response?
         if not relatedTerms:
             return [term]
+        relatedTerms = [re.sub(self.p, '', item) for item in relatedTerms]
         return relatedTerms
 
     def bingSearches(self) -> None:
