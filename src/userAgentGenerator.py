@@ -173,7 +173,7 @@ class GenerateUserAgent:
             str: The latest version of Google Chrome.
         """
         response = self.getWebdriverPage(
-            "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json"
+            "https://gh-proxy.com/github.com/GoogleChromeLabs/chrome-for-testing/blob/main/data/last-known-good-versions.json"
         )
         data = response.json()
         return data["channels"]["Stable"]["version"]
