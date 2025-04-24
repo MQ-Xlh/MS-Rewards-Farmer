@@ -68,14 +68,14 @@ class Utils:
         assert apprise.notify(title=str(title), body=str(body))
 
     def waitUntilVisible(
-        self, by: str, selector: str, timeToWait: float = 10
+        self, by: str, selector: str, timeToWait: float = 30
     ) -> WebElement:
         return WebDriverWait(self.webdriver, timeToWait).until(
             expected_conditions.visibility_of_element_located((by, selector))
         )
 
     def waitUntilClickable(
-        self, by: str, selector: str, timeToWait: float = 10
+        self, by: str, selector: str, timeToWait: float = 30
     ) -> WebElement:
         return WebDriverWait(self.webdriver, timeToWait).until(
             expected_conditions.element_to_be_clickable((by, selector))
