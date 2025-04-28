@@ -34,7 +34,11 @@ class Login:
 
     def executeLogin(self) -> None:
         # Email field
-        emailField = self.utils.waitUntilVisible(By.ID, "i0116")
+        emailField = None
+        with contextlib.suppress(TimeoutException):
+            emailField = self.utils.waitUntilVisible(By.ID, "i0116")
+        if emailField == None:
+            emailField = self.utils.waitUntilVisible(By.ID, "usernameEntry")
         logging.info("[LOGIN] Entering email...")
         emailField.click()
         emailField.send_keys(self.browser.username)
