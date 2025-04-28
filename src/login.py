@@ -7,6 +7,7 @@ from pyotp import TOTP
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from undetected_chromedriver import Chrome
+from selenium.webdriver.common.keys  import Keys
 
 from src.browser import Browser
 
@@ -43,7 +44,8 @@ class Login:
         emailField.click()
         emailField.send_keys(self.browser.username)
         assert emailField.get_attribute("value") == self.browser.username
-        self.utils.waitUntilClickable(By.ID, "idSIButton9").click()
+        # self.utils.waitUntilClickable(By.ID, "idSIButton9").click()
+        emailField.send_keys(Keys.ENTER)
 
         # Passwordless check
         isPasswordless = False
@@ -78,7 +80,8 @@ class Login:
             passwordField.click()
             passwordField.send_keys(self.browser.password)
             assert passwordField.get_attribute("value") == self.browser.password
-            self.utils.waitUntilClickable(By.ID, "idSIButton9").click()
+            passwordField.send_keys(Keys.ENTER)
+            # self.utils.waitUntilClickable(By.ID, "idSIButton9").click()
 
             # Check if 2FA is enabled, both device auth and TOTP are supported
             isDeviceAuthEnabled = False
