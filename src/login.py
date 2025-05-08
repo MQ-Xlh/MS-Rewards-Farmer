@@ -139,9 +139,18 @@ class Login:
                         " keep me signed in page."
                     )
                     input()
-
-        self.utils.waitUntilVisible(By.NAME, "kmsiForm")
-        self.utils.waitUntilClickable(By.ID, "acceptButton").click()
+        kmsi = False
+        with contextlib.suppress(TimeoutException):
+            self.utils.waitUntilVisible(By.NAME, "kmsiForm")
+            self.utils.waitUntilClickable(By.ID, "acceptButton").click()
+            kmsi = True
+        if not kmsi:
+            buttons = self.webdriver.find_elements(By.CLASS_NAME, "fui-Button")
+            for i in range(len(buttons)):
+                button = buttons[i]
+                if button.get_attribute("data-testid") == "secondaryButton":
+                    button.click()
+                    break
 
         # TODO: This should probably instead be checked with an element's id,
         # as the hardcoded text might be different in other languages
