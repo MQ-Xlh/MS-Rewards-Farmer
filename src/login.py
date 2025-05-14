@@ -1,6 +1,7 @@
 import argparse
 import contextlib
 import logging
+import time
 from argparse import Namespace
 
 from pyotp import TOTP
@@ -67,15 +68,31 @@ class Login:
 
         else:
             # Password-based login, enter password from accounts.json
+
+            emailCode = False
+            with contextlib.suppress(TimeoutException):
+                self.utils.waitUntilVisible(By.ID, "proof-confirmation-email-input")
+                emailCode = True
+            if emailCode:
+                items = self.webdriver.find_elements(By.CLASS_NAME, "fui-Link")
+                for i in range(len(items)):
+                    item = items[i]
+                    if item.tag_name == "span" and item.text == "其他登录方法":
+                        item.click()
+                        time.sleep(5)
+                        self.utils.waitUntilVisible(By.XPATH, "//div[@id='view']/div/div[3]/div[1]").click()
+                        break
+
+            passwordField = None
             try:
-                self.utils.waitUntilClickable(By.NAME, "passwd")
+                passwordField = self.utils.waitUntilClickable(By.NAME, "passwd")
             except TimeoutException:
                 with contextlib.suppress(TimeoutException):
                     self.utils.waitUntilVisible(By.ID, "oneTimeCodeTitle")
                     self.utils.waitUntilVisible(By.ID, "idA_PWD_SwitchToCredPicker").click()
                     self.utils.waitUntilVisible(By.ID, "tileList").find_element(By.TAG_NAME, 'div').click()
-
-            passwordField = self.utils.waitUntilClickable(By.NAME, "passwd")
+                    passwordField = self.utils.waitUntilClickable(By.NAME, "passwd")
+            assert passwordField is not None
             logging.info("[LOGIN] Entering password...")
             passwordField.click()
             passwordField.send_keys(self.browser.password)
